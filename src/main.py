@@ -2,11 +2,9 @@ from textnode import TextNode, TextType
 
 
 def main():
-    tn1 = TextNode("This is a text node 1", TextType.BOLD_TEXT, "https://www.test.com")
-    tn2 = TextNode(
-        "This is a text node 2", TextType.ITALIC_TEXT, "https://www.test.com"
-    )
-    tn3 = TextNode("This is a text node 1", TextType.BOLD_TEXT, "https://www.test.com")
+    tn1 = TextNode("This is a text node 1", TextType.BOLD, "https://www.test.com")
+    tn2 = TextNode("This is a text node 2", TextType.ITALIC, "https://www.test.com")
+    tn3 = TextNode("This is a text node 1", TextType.BOLD, "https://www.test.com")
     print(tn1)
     print(tn2)
     print(tn3)
