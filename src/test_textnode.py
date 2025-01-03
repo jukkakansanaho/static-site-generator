@@ -9,7 +9,7 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("This is a text node", TextType.BOLD)
         self.assertEqual(node, node2)
 
-    def test_repr(self):
+    def test_textnode_repr(self):
 
         node1 = TextNode(
             "This is a normal text node", TextType.NORMAL, "https://test.com"
