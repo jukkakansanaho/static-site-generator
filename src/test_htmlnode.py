@@ -2,8 +2,27 @@ import unittest
 
 from htmlnode import HTMLNode
 
+# from typing import TYPE_CHECKING
+
+
+# if TYPE_CHECKING:
+# from _typeshed import NoneType
+
 
 class TestHTMLNode(unittest.TestCase):
+    def test_htmlnode_param_types(self):
+        # if TYPE_CHECKING:
+        #    from _typeshed import NoneType
+
+        children = [].append(HTMLNode("b", "Content for bold Leafnode"))
+        props = {"href": "https://test.com", "target": "_blank"}
+        node1 = HTMLNode("a", "Content for a htmlnode", children, props)
+
+        self.assertIn(type(node1.tag), [str, type(None)])
+        self.assertIn(type(node1.value), [str, type(None)])
+        self.assertIn(type(node1.children), [list, type(None)])
+        self.assertIn(type(node1.props), [dict, type(None)])
+
     def test_htmlnode_repr_p(self):
         node1 = HTMLNode("p", "Content for p tag")
         self.assertEqual(repr(node1), f"HTMLNode(p, Content for p tag, None, None)")
@@ -22,7 +41,7 @@ class TestHTMLNode(unittest.TestCase):
         node4 = HTMLNode()
         self.assertEqual(repr(node4), f"HTMLNode(None, None, None, None)")
 
-    def test_props_to_html(self):
+    def test_htmlnode_props_to_html(self):
         props = {"href": "https://test.com"}
         node1 = HTMLNode("a", "Test.com", None, props)
         self.assertEqual(node1.props_to_html(), f' href="https://test.com"')
@@ -33,7 +52,7 @@ class TestHTMLNode(unittest.TestCase):
             node2.props_to_html(), f' href="https://test.com" target="_blank"'
         )
 
-    def test_props_to_html_empty(self):
+    def test_htmlnode_props_to_html_empty(self):
         props3 = {}
         node3 = HTMLNode("a", "Test.com", None, props3)
         self.assertEqual(node3.props_to_html(), None)
