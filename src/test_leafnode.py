@@ -49,3 +49,10 @@ class TestLeafNode(unittest.TestCase):
             self.assertEqual(type(e), TypeError)
         else:
             self.fail("Type error not raised")
+
+    def test_leafnode_repr(self):
+        props = {"href": "https://test.com", "target": "_blank"}
+        node1 = LeafNode("a", "Content for leafnode", None, props)
+        self.assertEqual(
+            repr(node1), f"HTMLNode(a, Content for leafnode, None, {str(props)})"
+        )
