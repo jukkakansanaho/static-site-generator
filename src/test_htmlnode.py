@@ -2,17 +2,9 @@ import unittest
 
 from htmlnode import HTMLNode
 
-# from typing import TYPE_CHECKING
-
-
-# if TYPE_CHECKING:
-# from _typeshed import NoneType
-
 
 class TestHTMLNode(unittest.TestCase):
     def test_htmlnode_param_types(self):
-        # if TYPE_CHECKING:
-        #    from _typeshed import NoneType
 
         children = [].append(HTMLNode("b", "Content for bold Leafnode"))
         props = {"href": "https://test.com", "target": "_blank"}
