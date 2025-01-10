@@ -12,11 +12,11 @@ class TestTextNode(unittest.TestCase):
     def test_textnode_repr(self):
 
         node1 = TextNode(
-            "This is a normal text node", TextType.NORMAL, "https://test.com"
+            "This is a normal text node", TextType.TEXT, "https://test.com"
         )
         self.assertEqual(
             repr(node1),
-            f"TextNode(This is a normal text node, normal, https://test.com)",
+            f"TextNode(This is a normal text node, text, https://test.com)",
         )
         node2 = TextNode("This is a bold text node", TextType.BOLD, "https://test.com")
         self.assertEqual(
@@ -45,12 +45,12 @@ class TestTextNode(unittest.TestCase):
 
     def test_textnode_missing_url(self):
 
-        node1 = TextNode("This is a normal text node without an url", TextType.NORMAL)
+        node1 = TextNode("This is a normal text node without an url", TextType.TEXT)
         self.assertEqual(node1.url, None)
 
     def test_textnode_text_types(self):
         node1 = TextNode(
-            "This is a normal text node", TextType.NORMAL, "https://test.com"
+            "This is a normal text node", TextType.TEXT, "https://test.com"
         )
         node2 = TextNode(
             "This is an italic text node", TextType.ITALIC, "https://test.com"
@@ -60,7 +60,7 @@ class TestTextNode(unittest.TestCase):
 
         node5 = TextNode("This is a link text node", TextType.LINK, "https://test.com")
 
-        self.assertEqual(node1.text_type, TextType.NORMAL)
+        self.assertEqual(node1.text_type, TextType.TEXT)
         self.assertEqual(node2.text_type, TextType.ITALIC)
         self.assertEqual(node3.text_type, TextType.BOLD)
         self.assertEqual(node4.text_type, TextType.CODE)
