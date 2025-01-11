@@ -1,6 +1,7 @@
 import unittest
 
-from textnode import TextNode, TextType
+from leafnode import LeafNode
+from textnode import TextNode, TextType, text_node_to_html_node
 
 
 class TestTextNode(unittest.TestCase):
@@ -65,6 +66,26 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(node3.text_type, TextType.BOLD)
         self.assertEqual(node4.text_type, TextType.CODE)
         self.assertEqual(node5.text_type, TextType.LINK)
+
+
+class TestTextNodeToHtmlNode(unittest.TestCase):
+    def test_textnode_to_htmlnode_TEXT(self):
+        node1 = TextNode("Normal text", TextType.TEXT)
+        node2 = LeafNode(None, "Normal text")
+        result = text_node_to_html_node(node1)
+        print(f"\ninput: {node1}")
+        print(f"output: {result}")
+        print(f"expected: {node2}")
+        self.assertIs(result, node2)
+
+    def test_textnode_to_htmlnode_BOLD(self):
+        node1 = TextNode("Bold text", TextType.BOLD)
+        node2 = LeafNode("b", "Bold text")
+        result = text_node_to_html_node(node1)
+        print(f"\ninput: {node1}")
+        print(f"output: {result}")
+        print(f"expected: {node2}")
+        self.assertIs(result, node2)
 
 
 if __name__ == "__main__":
