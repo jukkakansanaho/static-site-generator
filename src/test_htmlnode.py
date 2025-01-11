@@ -9,7 +9,6 @@ class TestHTMLNode(unittest.TestCase):
         children = [].append(HTMLNode("b", "Content for bold Leafnode"))
         # props = {}
         props = {"href": "https://test.com", "target": "_blank"}
-        print(f"\n:::--- props.type: {type(props)}")
         node1 = HTMLNode("a", "Content for a htmlnode", children, props)
 
         self.assertIn(type(node1.tag), [str, type(None)])
