@@ -15,7 +15,7 @@ class HTMLNode:
         self.props = props
 
     def __eq__(self, other):
-        if not isInstance(other, HTMLNode):
+        if not isinstance(other, HTMLNode):
             return False
         return (
             self.tag == other.tag,

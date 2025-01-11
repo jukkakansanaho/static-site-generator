@@ -76,7 +76,7 @@ class TestTextNodeToHtmlNode(unittest.TestCase):
         print(f"\ninput: {node1}")
         print(f"output: {result}")
         print(f"expected: {node2}")
-        self.assertIs(result, node2)
+        self.assertEqual(result, node2)
 
     def test_textnode_to_htmlnode_BOLD(self):
         node1 = TextNode("Bold text", TextType.BOLD)
@@ -85,7 +85,7 @@ class TestTextNodeToHtmlNode(unittest.TestCase):
         print(f"\ninput: {node1}")
         print(f"output: {result}")
         print(f"expected: {node2}")
-        self.assertIs(result, node2)
+        self.assertEqual(result, node2)
 
 
 if __name__ == "__main__":
