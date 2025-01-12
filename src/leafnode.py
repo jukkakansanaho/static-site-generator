@@ -2,6 +2,14 @@ from htmlnode import HTMLNode
 
 
 class LeafNode(HTMLNode):
+    """A class for single HTML tag without (HTML type) children.
+
+    Attributes:
+        tag (str): A string representing LeafNode tag (e.g. "p", "a", "h1", etc.)
+        value (str): A string representing the value of the HTML tag.
+        props (dict): A dictionary of key-value pairs representing the attributes of LeafNode tag (e.g. {"href":"https://test.com"})
+    """
+
     def __init__(self, tag, value, children=None, props=None):
         if children != None:
             raise TypeError("Children not allowed in leafnode")

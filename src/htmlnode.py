@@ -1,4 +1,15 @@
 class HTMLNode:
+    """A class representing a 'node' in a HTML document.
+
+    HTMLNode represents a 'node' in a HTML document tree (e.g. <p> for paragraph, <a> for link). HTMLNode can render itself an HTML.
+
+    Attributes:
+        tag (str): A string representing the HTML tag name (e.g. "p", "a", etc.).
+        value (str): A string representing the value of the HTML tag.
+        children (list): A list of HTMLNode objects representing the childeren of the HTMLNode.
+        props (dict): A disctionary of key-value pairs representing the attributes of the HTML tag (e.g. {"href":"https://test.com"})
+    """
+
     def __init__(self, tag=None, value=None, children=None, props=None):
         if not (isinstance(tag, str) or tag is None):
             raise TypeError("Tag must be a string or None")

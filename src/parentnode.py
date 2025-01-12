@@ -2,6 +2,16 @@ from htmlnode import HTMLNode
 
 
 class ParentNode(HTMLNode):
+    """A class representing the parent of nested HTMLNodes.
+
+    This class is for any HTML node that isn't a LeafNode (i.e. the parent of LeafNodes/children).
+
+    Attributes:
+        tag (str): A string representing the HTML tag name (e.g. "p", "h1", "ol")
+        children (list): A list of HTMLNode objects represneting the children of the node.
+        props (dict): A dictionary of key-value pairs representing the attributes of the ParentNode.
+    """
+
     def __init__(self, tag, children, props=None):
         if tag == "" or tag == None:
             raise TypeError("Tag required in parentnode")
