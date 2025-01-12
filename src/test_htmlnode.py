@@ -7,6 +7,7 @@ class TestHTMLNode(unittest.TestCase):
     def test_htmlnode_param_types(self):
 
         children = [].append(HTMLNode("b", "Content for bold Leafnode"))
+        # props = {}
         props = {"href": "https://test.com", "target": "_blank"}
         node1 = HTMLNode("a", "Content for a htmlnode", children, props)
 
@@ -39,7 +40,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(node1.props_to_html(), f' href="https://test.com"')
 
         props2 = {"href": "https://test.com", "target": "_blank"}
-        node2 = HTMLNode("a", "Test.com", "None", props2)
+        node2 = HTMLNode("a", "Test.com", None, props2)
         self.assertEqual(
             node2.props_to_html(), f' href="https://test.com" target="_blank"'
         )
@@ -49,6 +50,6 @@ class TestHTMLNode(unittest.TestCase):
         node3 = HTMLNode("a", "Test.com", None, props3)
         self.assertEqual(node3.props_to_html(), None)
 
-        props4 = ""
+        props4 = {}
         node4 = HTMLNode("a", "Test.com", None, props4)
         self.assertEqual(node3.props_to_html(), None)
