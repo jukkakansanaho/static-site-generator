@@ -27,9 +27,8 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(node1.to_html(), f"Content for empty tag leafnode")
 
     def test_leafnode_to_html_no_value(self):
-        node1 = LeafNode("p", None)
         try:
-            self.assertEqual(node1.to_html(), f"<p></p>")
+            node1 = LeafNode("p", None)
         except ValueError as e:
             self.assertEqual(type(e), ValueError)
         else:

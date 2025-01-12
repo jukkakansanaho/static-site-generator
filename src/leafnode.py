@@ -11,6 +11,8 @@ class LeafNode(HTMLNode):
     """
 
     def __init__(self, tag, value, children=None, props=None):
+        if value is None:
+            raise ValueError("Value cannot be empty")
         if children != None:
             raise TypeError("Children not allowed in leafnode")
         super().__init__(tag, value, children, props)

@@ -13,11 +13,24 @@ class ParentNode(HTMLNode):
     """
 
     def __init__(self, tag, children, props=None):
+        # Check if tag is None
         if tag == "" or tag == None:
-            raise TypeError("Tag required in parentnode")
+            raise TypeError("Tag cannot be empty in parentnode")
+        # Check if children is None
         if children == [] or children == None:
-            raise TypeError("Children required in parentnode")
-        super().__init__(tag, None, children, props)
+            raise TypeError("Children cannot be empty in parentnode")
+        # Check if tag is an empty string
+        if tag is str:
+            if self.len(tag) < 1:
+                raise ValueError("Tag cannot be empty")
+        # Check is children is an empty list
+        if children is not None and not isinstance(children, list):
+            raise TypeError("Children must be a list or None")
+        else:
+            if len(children) < 1:
+                raise TypeError("Children cannot be empty")
+
+        super().__init__(tag=tag, value=None, children=children, props=props)
 
     def to_html(self):
         if self.tag == "" or self.tag == None:

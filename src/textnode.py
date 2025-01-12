@@ -8,6 +8,7 @@ class TextType(Enum):
 
     This class contains text types (enums) for TextNode's text_type param.
     """
+
     TEXT = "text"
     BOLD = "bold"
     ITALIC = "italic"
@@ -27,6 +28,7 @@ class TextNode:
         url (str): Url of the link or image (if the text is link). Default is None.
 
     """
+
     def __init__(self, text, text_type, url=None):
         self.text = text
         self.text_type = text_type
@@ -70,6 +72,6 @@ def text_node_to_html_node(text_node):
             return LeafNode("a", text_node.text, None, props)
         case TextType.IMAGE:
             props = {"src": text_node.url, "alt": text_node.text}
-            return LeafNode("img", None, None, props)
+            return LeafNode("img", text_node.text, None, props)
         case default:
             raise TypeError(f"Invalid TextType: {text_node.text_type}")
