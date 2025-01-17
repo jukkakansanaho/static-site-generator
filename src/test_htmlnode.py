@@ -53,3 +53,7 @@ class TestHTMLNode(unittest.TestCase):
         props4 = {}
         node4 = HTMLNode("a", "Test.com", None, props4)
         self.assertEqual(node3.props_to_html(), None)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -92,3 +92,7 @@ class TestTextNodeParser(unittest.TestCase):
             self.assertEqual(type(e), ValueError)
         else:
             self.fail("ValueError not raised")
+
+
+if __name__ == "__main__":
+    unittest.main()

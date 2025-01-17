@@ -55,3 +55,7 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(
             repr(node1), f"HTMLNode(a, Content for leafnode, None, {str(props)})"
         )
+
+
+if __name__ == "__main__":
+    unittest.main()
