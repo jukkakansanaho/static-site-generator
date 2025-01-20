@@ -1,7 +1,8 @@
 import unittest
 
 from textnode import TextNode, TextType
-from textnode_parser import split_nodes_delimiter
+from textnode_parser import (extract_markdown_images, extract_markdown_links,
+                             split_nodes_delimiter)
 
 
 class TestTextNodeParser(unittest.TestCase):
@@ -92,6 +93,57 @@ class TestTextNodeParser(unittest.TestCase):
             self.assertEqual(type(e), ValueError)
         else:
             self.fail("ValueError not raised")
+
+
+class TestTextNodeParserExtractMarkdownLinks(unittest.TestCase):
+    def test_textnode_parsing_extract_markdown_links_valid_input(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.TEXT,
+        )
+        result = extract_markdown_links(node.text)
+        expected = [
+            ("to boot dev", "https://www.boot.dev"),
+            ("to youtube", "https://www.youtube.com/@bootdotdev"),
+        ]
+        self.assertEqual(result, expected)
+
+    def test_textnode_parsing_extract_markdown_links_link_and_image(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev), [to youtube](https://www.youtube.com/@bootdotdev), and image of ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+            TextType.TEXT,
+        )
+        result = extract_markdown_links(node.text)
+        expected = [
+            ("to boot dev", "https://www.boot.dev"),
+            ("to youtube", "https://www.youtube.com/@bootdotdev"),
+        ]
+        self.assertEqual(result, expected)
+
+
+class TestTextNodeParserExtractMarkdownImages(unittest.TestCase):
+    def test_textnode_parsing_extract_markdown_images(self):
+        node = TextNode(
+            "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+            TextType.TEXT,
+        )
+        result = extract_markdown_images(node.text)
+        expected = [
+            ("rick roll", "https://i.imgur.com/aKaOqIh.gif"),
+            ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg"),
+        ]
+        self.assertEqual(result, expected)
+
+    def test_textnode_parsing_extract_markdown_images_link_and_image(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev), [to youtube](https://www.youtube.com/@bootdotdev), and image of ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+            TextType.TEXT,
+        )
+        result = extract_markdown_images(node.text)
+        expected = [
+            ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg"),
+        ]
+        self.assertEqual(result, expected)
 
 
 if __name__ == "__main__":
