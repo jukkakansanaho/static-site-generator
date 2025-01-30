@@ -47,6 +47,59 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         results.extend(splitted_nodes)
     return results
 
+def split_nodes_image(old_nodes):
+    """Split TextNodes into text (TextType.TEXT) and images (TextType.IMAGE) with alt and url.
+
+    Args:
+        old_node (list): list of TextNodes
+
+    Return:
+        list: list of TextNodes with TextType.TEXT and TextType.IMAGE.
+    """
+    if not isinstance(old_nodes, list):
+        raise TypeError("Nodes must be a list")
+    if len(old_nodes) == 0:
+        return []
+    
+    results = []
+    for node in old_nodes:
+        if not isinstance(node, TextNode):
+            raise TypeError("Node must be an instance of TextNode class")
+        if node.text_type != TextType.TEXT:
+            results.append(node)
+            continue
+
+        orig_text = node.text
+        parts = extract_markdown_images(orig_text)
+        if len(parts) == 0: # Check if IMAGE nodes found
+            results.append(node)
+            continue
+
+        current_position = 0
+        for alt, link in parts:
+            img_markup = f"![{alt}]({link})"
+            start_index = orig_text.find(img_markup, current_position)
+            
+            # Add text before IMAGE as a TEXT node
+            if start_index > current_position:
+                preceding_text = orig_text[current_position:start_index]
+                if preceding_text: # Check if text != ""
+                    results.append(TextNode(preceding_text, TextType.TEXT))
+            # Add IMAGE node
+            results.append(TextNode(alt, TextType.IMAGE, link))
+            current_position = start_index + len(img_markup)
+            
+        # Add remaining text as TEXT node
+        if current_position < len(orig_text):
+            remaining_text = orig_text[current_position:]
+            if remaining_text: # Check if text != ""
+                results.append(TextNode(remaining_text, TextType.TEXT))
+
+    return results
+
+def split_nodes_link(old_nodes):
+    pass
+
 
 def extract_markdown_images(text):
     """Finds all markdown image links in the text.

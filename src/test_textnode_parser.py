@@ -1,8 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from textnode_parser import (extract_markdown_images, extract_markdown_links,
-                             split_nodes_delimiter)
+from textnode_parser import (extract_markdown_images, extract_markdown_links, split_nodes_delimiter, split_nodes_image, split_nodes_link)
 
 
 class TestTextNodeParser(unittest.TestCase):
@@ -145,6 +144,48 @@ class TestTextNodeParserExtractMarkdownImages(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
+class TestTextNodeParserSplitNodeImage(unittest.TestCase):
+    def test_textnode_parsing_split_nodes_image_valid_input_one_image(self):
+        node = TextNode(
+            "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)",
+            TextType.TEXT,
+        )
+        expected = [TextNode("This is text with a ", TextType.TEXT),
+                    TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+        ]
+
+        result = split_nodes_image([node])
+        self.assertEqual(result, expected)
+    
+    def test_textnode_parsing_split_nodes_image_valid_input_two_images(self):
+        node = TextNode(
+            "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+            TextType.TEXT,
+        )
+
+        expected = [TextNode("This is text with a ", TextType.TEXT),
+                    TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                    TextNode(" and ", TextType.TEXT),
+                    TextNode("obi wan", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+        ]
+        result = split_nodes_image([node])
+        self.assertEqual(result, expected)
+ 
+    def test_textnode_parsing_split_nodes_image_invalid_textnode(self):
+        try:
+            result = split_nodes_image(["This is an [image](https://i.imgur.com/aKa0qIh.gif)", TextType.TEXT])
+        except TypeError as e:
+            self.assertEqual(type(e), TypeError)
+        else:
+            self.fail("TypeError not raised")
+    
+    def test_textnode_parsing_split_nodes_image_invalid_inputlist(self):
+        try:
+            result = split_nodes_image({"link": "https://i.imgur.com/aKa0qIh.gif", "text_type": TextType.TEXT})
+        except TypeError as e:
+            self.assertEqual(type(e), TypeError)
+        else:
+            self.fail("TypeError not raised")
 
 if __name__ == "__main__":
     unittest.main()
