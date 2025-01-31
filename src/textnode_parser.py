@@ -98,7 +98,53 @@ def split_nodes_image(old_nodes):
     return results
 
 def split_nodes_link(old_nodes):
-    pass
+    """Split TextNodes into list of TextNodes with text only and TextNode(alt, TextType.LINK, url) with link.
+
+    Args:
+        old_node (list): list of TextNodes
+
+    Return:
+        list: list of TextNodes with TextType.TEXT and TextType.LINK.
+    """
+    if not isinstance(old_nodes, list):
+        raise TypeError("nodes must be a list")
+    if len(old_nodes) == 0:
+        return []
+
+    results = []
+    for node in old_nodes:
+        if not isinstance(node, TextNode):
+            raise TypeError("Node must be an instance of TextNode class")
+        if node.text_type != TextType.TEXT:
+            results.append(node)
+            continue
+
+        orig_text = node.text
+        parts = extract_markdown_links(orig_text)
+        if len(parts) == 0:
+            results.append(node)
+            continue
+        
+        current_position = 0
+        for alt, link in parts:
+            link_markdown = f"[{alt}]({link})"
+            start_index = orig_text.find(link_markdown, current_position)
+
+            # Add text before LINK markdown
+            if start_index > current_position:
+                preciding_text = orig_text[current_position:start_index]
+                if preciding_text:
+                    results.append(TextNode(preciding_text, TextType.TEXT))
+            
+            results.append(TextNode(alt, TextType.LINK, link))
+            current_position = start_index + len(link_markdown)
+
+        # Add remaining text as TEXT node
+        if current_position < len(orig_text):
+            remaining_text = orig_text[current_position:]
+            results.append(TextNode(remaining_text, TextType.TEXT))
+
+    return results
 
 
 def extract_markdown_images(text):

@@ -187,5 +187,48 @@ class TestTextNodeParserSplitNodeImage(unittest.TestCase):
         else:
             self.fail("TypeError not raised")
 
+class TestTextNodeParserSplitNodeLink(unittest.TestCase):
+    def test_textnode_parsing_split_nodes_link_valid_input_one_link(self):
+        node = TextNode("This is text with a link [to boot dev](https://www.boot.dev)",
+            TextType.TEXT,
+        )
+
+        expected = [TextNode("This is text with a link ", TextType.TEXT),
+                    TextNode("to boot dev", TextType.LINK, "https://www.boot.dev"),
+        ]
+        result = split_nodes_link([node])
+        self.assertEqual(result, expected)
+
+    def test_textnode_parsing_split_nodes_link_valid_input_two_links(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.TEXT,
+        )
+
+        expected = [TextNode("This is text with a link ", TextType.TEXT),
+                    TextNode("to boot dev", TextType.LINK, "https://www.boot.dev"),
+                    TextNode(" and ", TextType.TEXT),
+                    TextNode("to youtube", TextType.LINK, "https://www.youtube.com/@bootdotdev"),
+        ]
+        result = split_nodes_link([node])
+        self.assertEqual(result, expected)
+
+    def test_textnode_parsing_split_nodes_image_invalid_textnode(self):
+        try:
+            result = split_nodes_link(["This is a [link](https://www.test.com)", TextType.TEXT])
+        except TypeError as e:
+            self.assertEqual(type(e), TypeError)
+        else:
+            self.fail("TypeError not raised")
+    
+    def test_textnode_parsing_split_nodes_image_invalid_input_list(self):
+        try:
+            result = split_nodes_link({"link": "https://www.test.com", "text_type": TextType.TEXT})
+        except TypeError as e:
+            self.assertEqual(type(e), TypeError)
+        else:
+            self.fail("TypeError not raised")
+
+
 if __name__ == "__main__":
     unittest.main()
