@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from textnode_parser import (extract_markdown_images, extract_markdown_links, split_nodes_delimiter, split_nodes_image, split_nodes_link)
+from textnode_parser import (extract_markdown_images, extract_markdown_links, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes)
 
 
 class TestTextNodeParser(unittest.TestCase):
@@ -229,6 +229,52 @@ class TestTextNodeParserSplitNodeLink(unittest.TestCase):
         else:
             self.fail("TypeError not raised")
 
+class TestTextNodeParserTextToTexNodes(unittest.TestCase):
+    def test_text_to_textnodes_valid_input(self):
+        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+        result = text_to_textnodes(text)
+        self.assertEqual(result, expected)
+        
+    def test_text_to_textnode_misc_types(self):
+        text = "In happy scenario, `there's code` that *should* be **bolded** and pointing to [link](https://test.com) and ![cutecat](https://i.imgur/cutecat.jpeg) beside."
+
+        expected = [
+            TextNode("In happy scenario, ", TextType.TEXT),
+            TextNode("there's code", TextType.CODE),
+            TextNode(" that ", TextType.TEXT),
+            TextNode("should", TextType.ITALIC),
+            TextNode(" be ", TextType.TEXT),
+            TextNode("bolded", TextType.BOLD),
+            TextNode(" and pointing to ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://test.com"),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("cutecat", TextType.IMAGE, "https://i.imgur/cutecat.jpeg"),
+            TextNode(" beside.", TextType.TEXT),
+        ]
+        result = text_to_textnodes(text)
+        self.assertEqual(result, expected)
+    
+    def test_text_to_textnode_unclosed_delimiter(self):
+        text = "This text has an *italic error"
+        try:
+            result = text_to_textnodes(text)
+        except ValueError as e:
+            self.assertEqual(type(e), ValueError)
+        else:
+            self.fail("ValueError not raised")
 
 if __name__ == "__main__":
     unittest.main()
