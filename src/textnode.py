@@ -15,7 +15,12 @@ class TextType(Enum):
     CODE = "code"
     LINK = "link"
     IMAGE = "image"
-
+    
+    # Extra types
+    U_LIST = "unordered_list"
+    O_LIST = "ordered_list"
+    QUOTE = "quote"
+    CODE_BLOCK = "code_block"
 
 class TextNode:
     """A class to contain different types of text.
