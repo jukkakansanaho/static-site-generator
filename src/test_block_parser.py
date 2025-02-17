@@ -6,10 +6,14 @@ from block_parser import (
     markdown_to_blocks,
     markdown_to_html_node,
     block_to_block_type,
-    text_to_code_type,
-    text_to_list_type,
-    text_to_heading_type,
     text_to_children,
+    paragraph_to_html_node,
+    heading_to_html_node,
+    code_to_html_node,
+    olist_to_html_node,
+    ulist_to_html_node,
+    quote_to_html_node,
+    
 )
 from parentnode import ParentNode
 
@@ -119,7 +123,7 @@ class TestBlockParser(unittest.TestCase):
         result = block_to_block_type(text)
         expected = "paragraph"
         self.assertEqual(result, expected)
-        
+
     def test_block_parser_block_to_block_type_code_text_with_inline_marksdown(self):
         text = f"This is a **bold** text"
         result = block_to_block_type(text)
@@ -156,39 +160,50 @@ class TestTextToChildren(unittest.TestCase):
 class TestTextToList(unittest.TestCase):
     def test_text_to_list_ordered_list(self):
         node = "1. list-item-1\n2. list-item-2\n3. list-item-3"
-        result = text_to_list_type(node, "ordered_list")
-        expected = [
+        result = olist_to_html_node(node)
+        expected = ParentNode(
+            "ol",
+            [
             LeafNode("li", "list-item-1"),
             LeafNode("li", "list-item-2"),
             LeafNode("li", "list-item-3"),
-        ]
+            ]
+        )
         self.assertEqual(result, expected)
 
     def test_text_to_list_unordered_list_asterisk(self):
         node = "* list-item\n* list-item\n* list-item"
-        result = text_to_list_type(node, "unordered_list")
-        expected = [
+        result = ulist_to_html_node(node)
+        expected = ParentNode(
+            "ul",
+            [
             LeafNode("li", "list-item"),
             LeafNode("li", "list-item"),
             LeafNode("li", "list-item"),
-        ]
+            ]
+        )
         self.assertEqual(result, expected)
 
     def test_text_to_list_unordered_list_dash(self):
         node = "- list-item\n- list-item\n- list-item"
-        result = text_to_list_type(node, "unordered_list")
-        expected = [
+        result = ulist_to_html_node(node)
+        expected = ParentNode(
+            "ul", 
+            [
             LeafNode("li", "list-item"),
             LeafNode("li", "list-item"),
             LeafNode("li", "list-item"),
-        ]
+            ],
+        )
         self.assertEqual(result, expected)
 
 
     def test_unordered_list_bold_and_italic(self):
         node = "* list-item with **bold** text\n* list-item with *italic* text\n* list-item with both **bold** and *italic* text"
-        result = text_to_list_type(node, "unordered_list")
-        expected = [
+        result = ulist_to_html_node(node)
+        expected = ParentNode(
+            "ul",
+            [
             ParentNode(
                 "li", 
                 [
@@ -215,19 +230,27 @@ class TestTextToList(unittest.TestCase):
                     LeafNode(None, " text.")
                 ]
             )
-        ]
+            ]
+        )
         self.assertEqual(result, expected)
 
     def test_text_to_list_invalid_ordered_list(self):
         node = "- list-item\n* list-item\n- list-item"
-        result = text_to_list_type(node, "ordered_list")
-        expected = []
+        result = olist_to_html_node(node)
+        expected = ParentNode(
+            "ol",
+            [
+                LeafNode("li", "list-item"),
+                LeafNode("li", "list-item"),
+                LeafNode("li", "list-item")
+            ],
+        )
         self.assertEqual(result, expected)
 
 class TestTextToCode(unittest.TestCase):
     def test_text_to_code_valid_input(self):
         node = "```python\nprint('Hello there!')\n# Should print: Hello There!```"
-        result = text_to_code_type(node)
+        result = code_to_html_node(node)
         expected = ParentNode(
             "pre",
             [
@@ -241,15 +264,25 @@ class TestTextToCode(unittest.TestCase):
 
 class TestTextToHeading(unittest.TestCase):
      def test_text_to_heading_type_valid_input(self):
-        node = "# This is first-level heading"
-        result = text_to_heading_type(node)
-        expected = "h1"
+        node = "# This is first-level heading\n\nAnd this is paragraph under the heading."
+        result = heading_to_html_node(node)
+        expected = ParentNode(
+            "h1", 
+            [
+                LeafNode("p", "This is first-level heading"),
+            ]
+        )
         self.assertEqual(result, expected)
 
      def test_text_to_heading_type_invalid_input(self):
         node = "This is first-level heading"
-        result = text_to_heading_type(node)
-        expected = None
+        result = heading_to_html_node(node)
+        expected = ParentNode(
+            "h0", 
+            [
+                LeafNode("p", "This is first-level heading"),
+            ]
+        )
         self.assertEqual(result, expected)
 
 class TestMarkdownToHtmlnode(unittest.TestCase):
@@ -321,15 +354,17 @@ class TestMarkdownToHtmlnode(unittest.TestCase):
         )
 
     def test_markdown_to_html_heading_block(self):
-        node = "# This is the first-level heading\n\n## This is second-level heading\n\n### This is third-level heading"
+        node = "# This is the first-level heading\n\nThis is a paragraph.\n\n## This is second-level heading\n\nThis is a paragraph.\n\n### This is third-level heading\n\nThis is a paragraph."
         result = markdown_to_html_node(node)
-        expected = HTMLNode(
+        expected = ParentNode(
            "div",
-            None,
             [
                 LeafNode("h1", "This is the first-level heading"),
+                LeafNode("p", "This is a paragraph."),
                 LeafNode("h2", "This is second-level heading"),
+                LeafNode("p", "This is a paragraph."),
                 LeafNode("h3", "This is third-level heading"),
+                LeafNode("p", "This is a paragraph."),
             ],
         )
         self.assertEqual(result, expected)
@@ -352,7 +387,6 @@ class TestMarkdownToHtmlnode(unittest.TestCase):
         self.assertEqual(result, expected)
 
 class TestMarkdownToHtmlExtra(unittest.TestCase):
-    @unittest.skip("Skipped")
     def test_paragraph(self):
         md = """
 This is **bolded** paragraph
@@ -366,7 +400,6 @@ tag here
             html,
             "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p></div>",
         )
-    @unittest.skip("Skipped")
     def test_paragraphs(self):
         md = """
 This is **bolded** paragraph
@@ -383,7 +416,6 @@ This is another paragraph with *italic* text and `code` here
             html,
             "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
         )
-    @unittest.skip("Skipped")
     def test_lists(self):
         md = """
 - This is a list
@@ -402,7 +434,6 @@ This is another paragraph with *italic* text and `code` here
             html,
             "<div><ul><li>This is a list</li><li>with items</li><li>and <i>more</i> items</li></ul><ol><li>This is an <code>ordered</code> list</li><li>with items</li><li>and more items</li></ol></div>",
         )
-    @unittest.skip("Skipped")
     def test_headings(self):
         md = """
 # this is an h1
@@ -418,7 +449,6 @@ this is paragraph text
             html,
             "<div><h1>this is an h1</h1><p>this is paragraph text</p><h2>this is an h2</h2></div>",
         )
-    @unittest.skip("Skipped")
     def test_blockquote(self):
         md = """
 > This is a
