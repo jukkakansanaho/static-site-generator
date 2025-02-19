@@ -1,32 +1,31 @@
 import os
 import shutil
 
+from copy_files import copy_files
+from generate_content import generate_page
+
 path_static = os.path.expanduser("./static")
 path_public = os.path.expanduser("./public")
-
-def copy_files(source_path, target_path):
-    if not os.path.exists(target_path):
-        os.mkdir(target_path)
-
-    for file in os.listdir(source_path):
-        from_path = os.path.join(source_path, file)
-        to_path = os.path.join(target_path, file)
-        print(f" * {from_path} -> {to_path}")
-
-        if os.path.isfile(from_path):
-            shutil.copy(from_path, to_path)
-        else:
-            copy_files(from_path, to_path)
+path_content = os.path.expanduser("./content")
+path_template = os.path.expanduser("./template.html")
 
 def main():
     print("Deleting public/ directory...")
     if os.path.exists(path_public):
         shutil.rmtree(path_public)
     
-    print(f"Copying static files to public dir...")
+    print(f"\nCopying static files to public dir...")
     copy_files(path_static, path_public)
-    print(f"All DONE.")
 
+    print(f"\nGenerating content...")
+    generate_page(
+        os.path.join(path_content, "index.md"), 
+        path_template, 
+        os.path.join(path_public, "index.html")
+    )
+
+    print(f"Generating DONE.\n")
+    
 if __name__ == "__main__":
 
     main()
