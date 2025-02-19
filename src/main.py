@@ -2,7 +2,7 @@ import os
 import shutil
 
 from copy_files import copy_files
-from generate_content import generate_page
+from generate_content import generate_pages_recursively
 
 path_static = os.path.expanduser("./static")
 path_public = os.path.expanduser("./public")
@@ -18,10 +18,10 @@ def main():
     copy_files(path_static, path_public)
 
     print(f"\nGenerating content...")
-    generate_page(
-        os.path.join(path_content, "index.md"), 
+    generate_pages_recursively(
+        path_content, 
         path_template, 
-        os.path.join(path_public, "index.html")
+        path_public
     )
 
     print(f"Generating DONE.\n")
