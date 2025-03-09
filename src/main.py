@@ -12,7 +12,7 @@ else:
     print(f"Basepath: {basepath}")
 
 path_static = os.path.expanduser("./static")
-path_public = os.path.expanduser("./public")
+path_public = os.path.expanduser("./docs")
 path_content = os.path.expanduser("./content")
 path_template = os.path.expanduser("./template.html")
 
