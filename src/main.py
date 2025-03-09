@@ -5,10 +5,10 @@ import sys
 from copy_files import copy_files
 from generate_content import generate_pages_recursively
 
-if sys.argv[0] == "":
+if sys.argv[1] == "":
     basepath = "/"
 else:
-    basepath = sys.argv[0]
+    basepath = sys.argv[1]
     print(f"Basepath: {basepath}")
 
 path_static = os.path.expanduser("./static")
