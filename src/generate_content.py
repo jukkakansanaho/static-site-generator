@@ -9,7 +9,8 @@ def extract_title(markdown):
             return line[2:]
     raise ValueError("Title not found - Markdown must have h1 level title.")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(basepath, from_path, template_path, dest_path):
+    BASEPATH = basepath
     print(f" * {from_path} (template: {template_path}) -> {dest_path}")
     from_file = open(from_path, "r")
     md_content = from_file.read()
@@ -21,10 +22,14 @@ def generate_page(from_path, template_path, dest_path):
 
     node = markdown_to_html_node(md_content) 
     html = node.to_html()
-
+    href = f'href="{BASEPATH}'
+    src = f'src="{BASEPATH}'
+    
     title = extract_title(md_content)
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
+    template = template.replace('href="/', href)
+    template = template.replace('src="/', src)
 
     path_target = os.path.dirname(dest_path)
     if path_target != "":
@@ -33,14 +38,14 @@ def generate_page(from_path, template_path, dest_path):
     to_file.write(template)
     to_file.close()
 
-def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursively(basepath, dir_path_content, template_path, dest_dir_path):
     for filename in os.listdir(dir_path_content):
         from_path = os.path.join(dir_path_content, filename)
         to_path = os.path.join(dest_dir_path, filename)
         if os.path.isfile(from_path):
             to_path = Path(to_path).with_suffix(".html")
-            generate_page(from_path, template_path, to_path)
+            generate_page(basepath, from_path, template_path, to_path)
         else:
-            generate_pages_recursively(from_path, template_path, to_path)
+            generate_pages_recursively(basepath, from_path, template_path, to_path)
 
 
