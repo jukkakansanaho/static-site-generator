@@ -2,4 +2,3 @@ __pycache__/
 .venv/
 .coverage
 .DS_Store
-/public
